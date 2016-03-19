@@ -3,5 +3,6 @@ let log message =
 
 let () =
     let target = Dom_html.getElementById "content" in
-    let () = Firebug.console##log (ReactJS.create_element "h1") in
-    ignore (ReactDOM.render (ReactJS.create_element "h1" None) target)
+    let element = ReactJS.create_element "h1" (Some "Helloup") in
+    let () = Firebug.console##log element in
+    ignore (ReactDOM.render element target)
