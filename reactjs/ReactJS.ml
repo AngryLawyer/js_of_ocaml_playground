@@ -23,12 +23,17 @@ let create_element dom_class ?props content_list =
     | None -> Js.Unsafe.inject Js.null in
 
     (* build up our children *)
-    let content = Js.array (Array.of_list (List.map (function
+    let content = List.map (function
         | Dom_string s -> Js.Unsafe.inject (Js.string s)
         | React_element e -> Js.Unsafe.inject e
-    ) content_list)) in
+    ) content_list in
 
-    Js.Unsafe.meth_call reactJs "createElement" [| item_class; props; Js.Unsafe.inject content|]
+    let create_element = Js.Unsafe.get reactJs "createElement" in
+    let args = Js.array (Array.of_list ([
+        item_class;
+        props;
+    ] @ content)) in
+    Js.Unsafe.meth_call create_element "apply" [| Js.Unsafe.inject Js.null; Js.Unsafe.inject args |]
 
 let create_class spec =
     Js.Unsafe.meth_call reactJs "createClass" [| Js.Unsafe.inject spec |]
