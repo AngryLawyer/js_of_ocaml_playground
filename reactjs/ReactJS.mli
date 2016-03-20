@@ -8,6 +8,7 @@ type tag_type =
 type content_type =
     | Dom_string of string
     | React_element of react_element Js.t
+    | Element_list of content_type list
 
 val create_class : < render : react_element Js.t Js.meth; .. > Js.t -> react_class
 val create_element : tag_type -> ?props : < .. > Js.t -> content_type list -> react_element Js.t

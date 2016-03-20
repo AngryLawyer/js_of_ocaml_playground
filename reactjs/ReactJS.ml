@@ -12,6 +12,18 @@ type tag_type =
 type content_type =
     | Dom_string of string
     | React_element of react_element Js.t
+    | Element_list of content_type list
+
+let rec content_list_to_js content_list =
+    List.map (function
+        | Dom_string s -> Js.Unsafe.inject (Js.string s)
+        | React_element e -> Js.Unsafe.inject e
+        | Element_list l -> Js.Unsafe.inject (
+            Js.array (
+                Array.of_list (content_list_to_js l)
+            )
+        )
+    ) content_list
 
 let create_element dom_class ?props content_list =
     let item_class = match dom_class with
@@ -23,10 +35,7 @@ let create_element dom_class ?props content_list =
     | None -> Js.Unsafe.inject Js.null in
 
     (* build up our children *)
-    let content = List.map (function
-        | Dom_string s -> Js.Unsafe.inject (Js.string s)
-        | React_element e -> Js.Unsafe.inject e
-    ) content_list in
+    let content = content_list_to_js content_list in
 
     let create_element = Js.Unsafe.get reactJs "createElement" in
     let args = Js.array (Array.of_list ([
