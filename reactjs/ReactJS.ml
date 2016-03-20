@@ -1,6 +1,7 @@
 let reactJs = (Js.Unsafe.variable "React")
 class type react_element = object end
 class type react_class = object end
+class type react_props = object end
 
 let log i =
     Firebug.console##log i
@@ -13,6 +14,7 @@ type content_type =
     | Dom_string of string
     | React_element of react_element Js.t
     | Element_list of content_type list
+    | No_content
 
 let rec content_list_to_js content_list =
     List.map (function
@@ -23,6 +25,7 @@ let rec content_list_to_js content_list =
                 Array.of_list (content_list_to_js l)
             )
         )
+        | No_content -> Js.Unsafe.inject Js.null
     ) content_list
 
 let create_element dom_class ?props content_list =
@@ -46,3 +49,9 @@ let create_element dom_class ?props content_list =
 
 let create_class spec =
     Js.Unsafe.meth_call reactJs "createClass" [| Js.Unsafe.inject spec |]
+
+let get_props self =
+    Js.Unsafe.get self "props"
+
+let get_prop react_props key =
+    Js.Optdef.to_option (Js.Unsafe.get react_props key)
