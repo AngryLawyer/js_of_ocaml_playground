@@ -6,7 +6,7 @@ let log i =
 let comment = create_class (object%js (self)
     method render =
         let props = get_props self in
-        let author = match get_prop props "author" with 
+        let author = match get_prop props "author" with
             | Some s -> s
             | None -> "NO AUTHOR PROVIDED" in
         let children = match get_prop props "children" with
