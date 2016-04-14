@@ -1,3 +1,18 @@
+let default opt default =
+    match opt with
+    | Some x -> x
+    | None -> default
+
+let comment = ReactJS.create_class (object%js (self)
+    method render =
+        let props = ReactJS.get_props self in
+        [%jsx [div; className "comment"; [
+            [h2; className "commentAuthor"; [
+                [%code ReactJS.Dom_string (default (ReactJS.get_prop props "author") "NO AUTHOR")]
+            ]]
+        ]]]
+end)
+
 let comment_list = ReactJS.create_class (object%js
     method render =
         [%jsx [div; className "commentList"; [
