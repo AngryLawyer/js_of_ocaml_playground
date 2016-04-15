@@ -8,15 +8,18 @@ let comment = ReactJS.create_class (object%js (self)
         let props = ReactJS.get_props self in
         [%jsx [div; className "comment"; [
             [h2; className "commentAuthor"; [
-                [%code ReactJS.Dom_string (default (ReactJS.get_prop props "author") "NO AUTHOR")]
-            ]]
+                [%code ReactJS.Dom_string (default (ReactJS.get_prop props "author") "NO AUTHOR")];
+            ]];
+            (* THIS LINE BREAKS THINGS *)
+            [%code ReactJS.Element_list (default (ReactJS.get_prop props "children") [])]
         ]]]
 end)
 
 let comment_list = ReactJS.create_class (object%js
     method render =
         [%jsx [div; className "commentList"; [
-            "Hello world! I am a CommentList!"
+            [Comment; author "Pete Hunt"; ["This is one comment"]];
+            [Comment; author "Jordan Walke"; ["This is *another* comment"]];
         ]]]
 end)
 
