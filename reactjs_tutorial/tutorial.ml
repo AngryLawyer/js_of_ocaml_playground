@@ -3,6 +3,18 @@ let default opt default =
     | Some x -> x
     | None -> default
 
+let to_string x =
+    Js.to_string (Js.Unsafe.meth_call x "toString" [||])
+
+let raw_markup x =
+    let markdown = Omd.to_html (Omd.of_string x) in
+    object%js
+        val ___html = markdown
+    end
+
+let log i =
+    Firebug.console##log i
+
 let comment = ReactJS.create_class (object%js (self)
     method render =
         let props = ReactJS.get_props self in
@@ -10,8 +22,12 @@ let comment = ReactJS.create_class (object%js (self)
             [h2; className "commentAuthor"; [
                 [%code ReactJS.Dom_string (default (ReactJS.get_prop props "author") "NO AUTHOR")];
             ]];
-            (* THIS LINE BREAKS THINGS *)
-            [%code ReactJS.Element_list (default (ReactJS.get_prop props "children") [])]
+            [%code match ReactJS.get_prop props "children" with
+                | Some element -> let stringy_element = to_string element in
+                    let markdown = Omd.to_html (Omd.of_string stringy_element) in
+                    ReactJS.Dom_string markdown
+                | None -> ReactJS.No_content
+            ]
         ]]]
 end)
 
