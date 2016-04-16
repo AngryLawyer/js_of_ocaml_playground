@@ -24,8 +24,8 @@ let comment = ReactJS.create_class (object%js (self)
             ]];
             [%code match ReactJS.get_prop props "children" with
                 | Some element -> let stringy_element = to_string element in
-                    let markdown = Omd.to_html (Omd.of_string stringy_element) in
-                    ReactJS.Dom_string markdown
+                    let markup = raw_markup stringy_element in
+                    ReactJS.React_element [%jsx [span; dangerouslySetInnerHtml markup]]
                 | None -> ReactJS.No_content
             ]
         ]]]
