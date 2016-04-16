@@ -9,7 +9,7 @@ let to_string x =
 let raw_markup x =
     let markdown = Omd.to_html (Omd.of_string x) in
     object%js
-        val ___html = markdown
+        val __html = markdown
     end
 
 let log i =
@@ -25,7 +25,7 @@ let comment = ReactJS.create_class (object%js (self)
             [%code match ReactJS.get_prop props "children" with
                 | Some element -> let stringy_element = to_string element in
                     let markup = raw_markup stringy_element in
-                    ReactJS.React_element [%jsx [span; dangerouslySetInnerHtml markup]]
+                    ReactJS.React_element [%jsx [span; dangerouslySetInnerHTML markup]]
                 | None -> ReactJS.No_content
             ]
         ]]]
