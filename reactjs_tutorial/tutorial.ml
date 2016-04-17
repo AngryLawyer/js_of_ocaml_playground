@@ -15,6 +15,14 @@ let raw_markup x =
 let log i =
     Firebug.console##log i
 
+let data = begin
+    let data = Json.unsafe_input (Js.string "[
+  {\"id\": 1, \"author\": \"Pete Hunt\", \"text\": \"This is one comment\"},
+  {\"id\": 2, \"author\": \"Jordan Walke\", \"text\": \"This is *another* comment\"}
+]") in
+    log data
+end
+
 let comment = ReactJS.create_class (object%js (self)
     method render =
         let props = ReactJS.get_props self in
