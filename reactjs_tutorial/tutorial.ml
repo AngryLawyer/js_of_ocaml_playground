@@ -24,17 +24,21 @@ let data = begin
 end
 
 module Comment = ReactJS.Make_ReactClass(struct
-    type props_spec = < author: string Js.readonly_prop; children:  > Js.t
+    type props_spec = < author: string Js.readonly_prop > Js.t
     type state_spec = < > Js.t
 end)
 let comment = Comment.create_class (object%js (self)
     method render =
         let props = Comment.get_props self in
+        let children = ReactJS.Children.get self in
         [%jsx [div; className "comment"; [
             [h2; className "commentAuthor"; [
                 [%code ReactJS.Dom_string (props##.author)];
-            ]](*;
-            [%code match ReactJS.get_prop props "children" with
+            ]];
+            [%code ReactJS.Children.map (fun child ->
+                child
+            ) children]
+            (*match ReactJS.get_prop props "children" with
                 | Some element -> let stringy_element = to_string element in
                     let markup = raw_markup stringy_element in
                     ReactJS.React_element [%jsx [span; dangerouslySetInnerHTML markup]]
